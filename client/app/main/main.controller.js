@@ -2,23 +2,15 @@
 
 angular.module('base0App')
   .controller('MainCtrl', function ($scope, $http) {
-    $scope.awesomeThings = [];
+    $scope.bars = [];
 
-/*    $http.get('/api/things').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-    });
+    $scope.search = function(bars) {
+      $http.get('/api/data/'+bars).success(function(barslist) {
+        $scope.bars = barslist["businesses"];
+      });
+    }
 
-    $scope.addThing = function() {
-      if($scope.newThing === '') {
-        return;
-      }
-      $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
-    };
-
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
-    };
-
-*/    
+    $scope.addme = function(bar){
+      alert("added "+bar.url);
+    }
   });

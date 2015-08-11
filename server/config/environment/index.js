@@ -50,6 +50,13 @@ var all = {
     callbackURL:  (process.env.DOMAIN || '') + '/auth/twitter/callback'
   },
 
+  yelp: {
+    ConsumerKey:    process.env.CONSUMER_KEY,
+    ConsumerSecret: process.env.CONSUMER_SECRET,
+    Token:          process.env.TOKEN,
+    TokenSecret:    process.env.TOKEN_SECRET
+  },
+
 };
 
 // Export the config object based on the NODE_ENV
