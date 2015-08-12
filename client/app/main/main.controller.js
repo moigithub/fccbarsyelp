@@ -3,6 +3,8 @@
 angular.module('base0App')
   .controller('MainCtrl', function ($scope, $http, Auth) {
     $scope.getCurrentUser = Auth.getCurrentUser();
+    $scope.isLoggedIn = Auth.isLoggedIn();
+
     $scope.bars = [];
     //$scope.places = [];
 
@@ -34,19 +36,24 @@ angular.module('base0App')
               users : []
             };
             // check places, probably some users have added/goin to
+            
             var place = places.filter(function(p){
               return p["place"] === bar["id"];
             });
             
             if (place.length>0) {
-              tbar.goinCount = place.users.length;
-              tbar.users = place.users;
+              console.log("ESTE despues place",place);
+
+              tbar.goinCount = place[0].users.length;
+              tbar.users = place[0].users;
 
               // check if the current user is added, and set the button state
-              var haveUser =  places.users.filter(function(u){
-                return u._id === $scope.getCurrentUser._id;
+              var haveUser =  place[0].users.filter(function(u){
+                return u["_id"] === $scope.getCurrentUser._id;
               });
-              tbar.userAdded = haveUser.length > 0;
+
+              tbar.userAdded = haveUser.length > 0 ? "Remove Me" : "Add Me";
+  
             }
             return tbar;
           });
@@ -58,28 +65,35 @@ angular.module('base0App')
 
     $scope.addme = function(bar){
       console.log("added ",bar);
+      // make sure user have logged in
+      if (!$scope.isLoggedIn) {
+        alert("Login first, kthxbye!");
+        return;
+      }
 
+      var elbar= bar;
       var placeObj={};
 
       //should return 1 object only
       $http.get('/api/places/'+bar.location+'/'+bar.id).success(function(place) {
-        console.log(place);
-        placeObj=place;
+        console.log("place",place);
+        placeObj=place; // devuelve [] revisar api
 
         // if object returned is empty.. means no1 goin there
         // if not empty check if we are on user list (we registered)
         // if not registered, add to users array
         // if already registered, delete user from array
 
-        if(Object.keys(placeObj).length<1) {
+        if(placeObj.length<1) {
           // no1 goin there.. im the first
           // create new
+          console.log("XXX",bar);
           placeObj = {
-            location: bar.location.city,
-            place: bar._id,
-            users: [$scope.getCurrentUser]
+            "location": bar.location,
+            "place": bar.id,
+            "users": [$scope.getCurrentUser]
           };
-
+          console.log("POST placeObj", placeObj);
           //save data
           $http.post('/api/places/', placeObj).success(function(place) {
             console.log("saved", place)
@@ -102,7 +116,7 @@ angular.module('base0App')
           }
           placeObj.users=filterUser;
 
-
+          console.log("PUT placeObj", placeObj);
           //update data
           $http.put('/api/places/'+placeObj._id, placeObj).success(function(place) {
             console.log("Updated",place);

@@ -8,7 +8,8 @@ exports.index = function(req, res) {
   //location/:place
   Place.find({location:req.params.location, place:req.params.place}, function (err, place) {
     if(err) { return handleError(res, err); }
-    if(!place) { return res.status(404).send({}); }
+    console.log("index",place);
+    if(!place) { return res.status(404).send([]); }
     return res.status(200).json(place);
   });
 };
@@ -17,6 +18,7 @@ exports.index = function(req, res) {
 exports.show = function(req, res) {
   Place.find({location:req.params.location}, function (err, places) {
     if(err) { return handleError(res, err); }
+    console.log("show", places);
     if(!places) { return res.status(404).send([]); }
     return res.json(places);
   });
@@ -25,6 +27,7 @@ exports.show = function(req, res) {
 // Creates a new place in the DB.
 exports.create = function(req, res) {
   Place.create(req.body, function(err, place) {
+    console.log("saving:", req.body);
     if(err) { return handleError(res, err); }
     return res.status(201).json(place);
   });
