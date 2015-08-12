@@ -32,3 +32,21 @@
 .navbar-text {
     margin-left: 15px;
 }
+
+.onoff {
+    background-color: green;
+    color:white;
+}
+.onoff:checked {
+    background-color: blue;
+    color: red;
+}
+
+.link {
+    text-decoration: none;
+    display: block;
+}
+.going {
+    background-color: orange;
+    color: white;
+}

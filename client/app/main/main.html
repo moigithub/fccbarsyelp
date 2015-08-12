@@ -9,13 +9,15 @@
       </form>
       <ul class="barslist">
         <li ng-repeat="bar in bars">
-          <label>
-            <input type="checkbox" ng-model="bar.userAdded" ng-true-value="'Remove Me'" ng-false-value="'Add Me'" ng-click="addme(bar)">
-            {{bar.userAdded}}
+          <label id="{{'botonlbl_'+$index}}" >
+            <button class="onoff" id="{{'boton_'+$index}}" ng-click="addme(bar, $index)">
+              <span ng-hide="bar.userAdded">Add Me</span>
+              <span ng-show="bar.userAdded">Remove Me</span>
+            </button>
           </label>
-          <a href="#" ng-href="{{bar.url}}" target="_blank">{{bar.name}}</a>
+          <a href="#" class="link" ng-href="{{bar.url}}" target="_blank">{{bar.name}}</a>
           {{bar}}
-          <span>{{bar.goinCount}} Going</span>
+          <span class="going">{{bar.goinCount}} Going</span>
         </li>
       </ul>
     </div>

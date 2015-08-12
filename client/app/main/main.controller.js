@@ -32,7 +32,7 @@ angular.module('base0App')
             //  location : bar.location,
               url : bar.url,
               goinCount : 0,
-              userAdded : "Add Me",
+              userAdded : false,
               users : []
             };
             // check places, probably some users have added/goin to
@@ -52,7 +52,7 @@ angular.module('base0App')
                 return u["_id"] === $scope.getCurrentUser._id;
               });
 
-              tbar.userAdded = haveUser.length > 0 ? "Remove Me" : "Add Me";
+              tbar.userAdded = haveUser.length > 0;
   
             }
             return tbar;
@@ -63,11 +63,14 @@ angular.module('base0App')
       });
     } // end search function
 
-    $scope.addme = function(bar){
+    $scope.addme = function(bar, index){
       console.log("added ",bar);
       // make sure user have logged in
       if (!$scope.isLoggedIn) {
+        
         alert("Login first, kthxbye!");
+        //angular.element($('#boton_'+index))
+        //angular.element(document.querySelector('#myElement'))
         return;
       }
 
@@ -96,7 +99,8 @@ angular.module('base0App')
           console.log("POST placeObj", placeObj);
           //save data
           $http.post('/api/places/', placeObj).success(function(place) {
-            console.log("saved", place)
+            console.log("saved", place);
+            bar.userAdded = true;
           });
         } else {
           // some1 already goin
@@ -106,7 +110,9 @@ angular.module('base0App')
           var filterUser = placeObj.users.filter(function(u){
             return u._id!==$scope.getCurrentUser._id;
           });
-          if(bar.userAdded==="Add Me") {
+
+
+          if(bar.userAdded) {
             // remove
             //placeObj.users = filterUser; //refactored below
           } else {
@@ -120,6 +126,7 @@ angular.module('base0App')
           //update data
           $http.put('/api/places/'+placeObj._id, placeObj).success(function(place) {
             console.log("Updated",place);
+            bar.userAdded = !bar.userAdded;
           });
         }
       });
