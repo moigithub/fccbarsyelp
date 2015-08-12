@@ -4,15 +4,15 @@ angular.module('base0App')
   .controller('MainCtrl', function ($scope, $http, Auth) {
     $scope.getCurrentUser = Auth.getCurrentUser();
     $scope.bars = [];
-    $scope.places = [];
+    //$scope.places = [];
 
     $scope.search = function(location) {
       $http.get('/api/data/'+location).success(function(barslist) {
-        $scope.bars = barslist["businesses"];
+        var barslist = barslist["businesses"];
 
         // get user places data
         $http.get('/api/places/'+location).success(function(placelist) {
-          $scope.places = placelist;
+          var places = placelist;
 
 /*
 var PlaceSchema = new Schema({
@@ -33,26 +33,37 @@ provider
           // check if the current user is on users array
           // set the button state accordingly (another property)
 
-          $scope.bars.map(function(bar){
+          $scope.bars = barslist.map(function(bar){
+            // show only some data
+            // probably should move this "filter" to server side
+            // less data === less trafic
+            var tbar={
+              name : bar.name,
+              id : bar.id,
+            //  location : bar.location,
+              url : bar.url,
+              goinCount : 0,
+              userAdded : false,
+              users : []
+            };
             // check places, probably some users have added/goin to
-            var place = $scope.places.filter(function(p){
-              return p.place === bar["id"];
+            var place = places.filter(function(p){
+              return p["place"] === bar["id"];
             });
-            bar.goinCount = 0;
-            bar.userAdded = false;
-            bar.users = [];
+            
             if (place.length>0) {
-              bar.goinCount = place.users.length;
-              bar.users = place.users;
+              tbar.goinCount = place.users.length;
+              tbar.users = place.users;
 
               // check if the current user is added, and set the button state
-              var haveUser = $scope.places.users.filter(function(u){
+              var haveUser =  places.users.filter(function(u){
                 return u._id === $scope.getCurrentUser._id;
               });
-              bar.userAdded = haveUser.length > 0;
+              tbar.userAdded = haveUser.length > 0;
             }
-            return bar;
+            return tbar;
           });
+          
         });
 
       });

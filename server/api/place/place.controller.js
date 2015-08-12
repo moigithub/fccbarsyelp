@@ -11,11 +11,11 @@ exports.index = function(req, res) {
   });
 };
 
-// Get a single place
+// Get a places by location
 exports.show = function(req, res) {
-  Place.findById(req.params.id, function (err, place) {
+  Place.find({location:req.params.location}, function (err, place) {
     if(err) { return handleError(res, err); }
-    if(!place) { return res.status(404).send('Not Found'); }
+    if(!place) { return res.status(404).send({}); }
     return res.json(place);
   });
 };
