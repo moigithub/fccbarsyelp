@@ -14,20 +14,6 @@ angular.module('base0App')
         $http.get('/api/places/'+location).success(function(placelist) {
           var places = placelist;
 
-/*
-var PlaceSchema = new Schema({
-  location: String,
-  place: String,       //  placeID
-  users: Array
-});
-
-/*
-users array have 
-{
-_id
-name
-provider
-}*/
           // iterate on each bars
           // add a property GoinCount = users.length
           // check if the current user is on users array
@@ -39,11 +25,12 @@ provider
             // less data === less trafic
             var tbar={
               name : bar.name,
+              location:location,
               id : bar.id,
             //  location : bar.location,
               url : bar.url,
               goinCount : 0,
-              userAdded : false,
+              userAdded : "Add Me",
               users : []
             };
             // check places, probably some users have added/goin to
@@ -67,28 +54,75 @@ provider
         });
 
       });
-    }
+    } // end search function
 
     $scope.addme = function(bar){
-      alert("added "+bar.userAdded);
-      // if already registered, delete user from array, else add
-      var placeObj = {
-        location: bar.location.city,
-        place: bar._id,
-        users:bar.users
-      };
+      console.log("added ",bar);
 
-      if(bar.userAdded) {
+      var placeObj;
+
+      //should return 1 object only
+      $http.get('/api/places/'+bar.location+'/'+bar.id).success(function(place) {
+        console.log(place);
+        placeObj=place;
+      });
+
+      // if object returned is empty.. means no1 goin there
+      // if not empty check if we are on user list (we registered)
+      // if not registered, add to users array
+      // if already registered, delete user from array
+
+      if(Object.keys(placeObj).length<1) {
+        // no1 goin there.. im the first
+        // create new
+        placeObj = {
+          location: bar.location.city,
+          place: bar._id,
+          users: [$scope.getCurrentUser]
+        };
+
+        //save data
+        $http.post('/api/places/', placeObj).success(function(place) {
+          console.log("saved", place)
+        });
+      } else {
+        // some1 already goin
+        // check if we are on the user list (are we goin? )
+        // add or remove depending on checkbox state
+
         var filterUser = placeObj.users.filter(function(u){
           return u._id!==$scope.getCurrentUser._id;
         });
-        placeObj.users = filterUser;
-      } else {
-        placeObj.users.push($scope.getCurrentUser);
-      }
-      //save data
-      $http.post('/api/places/'+bar._id, placeObj).success(function(placelist) {
+        if(bar.userAdded==="Add Me") {
+          // remove
+          //placeObj.users = filterUser; //refactored below
+        } else {
+          // add
+          filterUser.push($scope.getCurrentUser);
+          //placeObj.users = filterUser; //refactored below
+        }
+        placeObj.users=filterUser;
 
-      });
-    }
-  });
+
+        //update data
+        $http.put('/api/places/'+placeObj._id, placeObj).success(function(place) {
+          console.log("Updated",place);
+        });
+      }
+
+    } // end addme function
+  }); // end controller
+/*
+var PlaceSchema = new Schema({
+  location: String,
+  place: String,       //  placeID
+  users: Array
+});
+
+/*
+users array have 
+{
+_id
+name
+provider
+}*/

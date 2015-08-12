@@ -3,20 +3,22 @@
 var _ = require('lodash');
 var Place = require('./place.model');
 
-// Get list of places
+// Get 1 specific place
 exports.index = function(req, res) {
-  Place.find(function (err, places) {
+  //location/:place
+  Place.find({location:req.params.location, place:req.params.place}, function (err, place) {
     if(err) { return handleError(res, err); }
-    return res.status(200).json(places);
+    if(!place) { return res.status(404).send({}); }
+    return res.status(200).json(place);
   });
 };
 
 // Get a places by location
 exports.show = function(req, res) {
-  Place.find({location:req.params.location}, function (err, place) {
+  Place.find({location:req.params.location}, function (err, places) {
     if(err) { return handleError(res, err); }
-    if(!place) { return res.status(404).send({}); }
-    return res.json(place);
+    if(!places) { return res.status(404).send([]); }
+    return res.json(places);
   });
 };
 
