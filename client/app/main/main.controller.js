@@ -59,56 +59,57 @@ angular.module('base0App')
     $scope.addme = function(bar){
       console.log("added ",bar);
 
-      var placeObj;
+      var placeObj={};
 
       //should return 1 object only
       $http.get('/api/places/'+bar.location+'/'+bar.id).success(function(place) {
         console.log(place);
         placeObj=place;
+
+        // if object returned is empty.. means no1 goin there
+        // if not empty check if we are on user list (we registered)
+        // if not registered, add to users array
+        // if already registered, delete user from array
+
+        if(Object.keys(placeObj).length<1) {
+          // no1 goin there.. im the first
+          // create new
+          placeObj = {
+            location: bar.location.city,
+            place: bar._id,
+            users: [$scope.getCurrentUser]
+          };
+
+          //save data
+          $http.post('/api/places/', placeObj).success(function(place) {
+            console.log("saved", place)
+          });
+        } else {
+          // some1 already goin
+          // check if we are on the user list (are we goin? )
+          // add or remove depending on checkbox state
+
+          var filterUser = placeObj.users.filter(function(u){
+            return u._id!==$scope.getCurrentUser._id;
+          });
+          if(bar.userAdded==="Add Me") {
+            // remove
+            //placeObj.users = filterUser; //refactored below
+          } else {
+            // add
+            filterUser.push($scope.getCurrentUser);
+            //placeObj.users = filterUser; //refactored below
+          }
+          placeObj.users=filterUser;
+
+
+          //update data
+          $http.put('/api/places/'+placeObj._id, placeObj).success(function(place) {
+            console.log("Updated",place);
+          });
+        }
       });
 
-      // if object returned is empty.. means no1 goin there
-      // if not empty check if we are on user list (we registered)
-      // if not registered, add to users array
-      // if already registered, delete user from array
-
-      if(Object.keys(placeObj).length<1) {
-        // no1 goin there.. im the first
-        // create new
-        placeObj = {
-          location: bar.location.city,
-          place: bar._id,
-          users: [$scope.getCurrentUser]
-        };
-
-        //save data
-        $http.post('/api/places/', placeObj).success(function(place) {
-          console.log("saved", place)
-        });
-      } else {
-        // some1 already goin
-        // check if we are on the user list (are we goin? )
-        // add or remove depending on checkbox state
-
-        var filterUser = placeObj.users.filter(function(u){
-          return u._id!==$scope.getCurrentUser._id;
-        });
-        if(bar.userAdded==="Add Me") {
-          // remove
-          //placeObj.users = filterUser; //refactored below
-        } else {
-          // add
-          filterUser.push($scope.getCurrentUser);
-          //placeObj.users = filterUser; //refactored below
-        }
-        placeObj.users=filterUser;
-
-
-        //update data
-        $http.put('/api/places/'+placeObj._id, placeObj).success(function(place) {
-          console.log("Updated",place);
-        });
-      }
 
     } // end addme function
   }); // end controller
