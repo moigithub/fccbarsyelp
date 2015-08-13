@@ -3,7 +3,7 @@
 angular.module('base0App')
   .controller('MainCtrl', function ($scope, $http, Auth) {
     $scope.getCurrentUser = Auth.getCurrentUser();
-    $scope.isLoggedIn = Auth.isLoggedIn();
+    $scope.isLoggedIn = Auth.isLoggedIn;
 
     $scope.bars = [];
     //$scope.places = [];
@@ -37,6 +37,7 @@ angular.module('base0App')
             };
             // check places, probably some users have added/goin to
             
+            console.log("places", places);
             var place = places.filter(function(p){
               return p["place"] === bar["id"];
             });
@@ -66,7 +67,7 @@ angular.module('base0App')
     $scope.addme = function(bar, index){
       console.log("added ",bar);
       // make sure user have logged in
-      if (!$scope.isLoggedIn) {
+      if (!Auth.isLoggedIn()) {
         
         alert("Login first, kthxbye!");
         //angular.element($('#boton_'+index))
@@ -74,7 +75,7 @@ angular.module('base0App')
         return;
       }
 
-      var elbar= bar;
+      //var elbar= bar;
       var placeObj={};
 
       //should return 1 object only
@@ -96,16 +97,20 @@ angular.module('base0App')
             "place": bar.id,
             "users": [$scope.getCurrentUser]
           };
-          console.log("POST placeObj", placeObj);
           //save data
           $http.post('/api/places/', placeObj).success(function(place) {
             console.log("saved", place);
             bar.userAdded = true;
+            bar.users = place.users;
+            bar.goinCount=place.users.length;
           });
         } else {
           // some1 already goin
           // check if we are on the user list (are we goin? )
           // add or remove depending on checkbox state
+          console.log("else placeObj", placeObj);
+          // pick first element since its an array
+          placeObj= placeObj[0];
 
           var filterUser = placeObj.users.filter(function(u){
             return u._id!==$scope.getCurrentUser._id;
@@ -127,6 +132,8 @@ angular.module('base0App')
           $http.put('/api/places/'+placeObj._id, placeObj).success(function(place) {
             console.log("Updated",place);
             bar.userAdded = !bar.userAdded;
+            bar.users = place.users;
+            bar.goinCount = place.users.length;
           });
         }
       });
