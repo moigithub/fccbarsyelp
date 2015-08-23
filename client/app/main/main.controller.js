@@ -38,20 +38,23 @@ angular.module('base0App')
               url : bar.url,
               goinCount : 0,
               userAdded : false,
+              image_url:bar.image_url,
+              snippet_text:bar.snippet_text,
               users : []
             };
             // check places, probably some users have added/goin to
             
-            console.log("places", places);
+            //console.log("places", places);
             var place = places.filter(function(p){
               return p["place"] === bar["id"];
             });
             
             if (place.length>0) {
-              console.log("ESTE despues place",place);
+              //console.log("ESTE despues place",place);
 
               tbar.goinCount = place[0].users.length;
               tbar.users = place[0].users;
+              
 
               // check if the current user is added, and set the button state
               var haveUser =  place[0].users.filter(function(u){
@@ -70,7 +73,7 @@ angular.module('base0App')
     } // end search function
 
     $scope.addme = function(bar, index){
-      console.log("added ",bar);
+      //console.log("added ",bar);
       // make sure user have logged in
       if (!Auth.isLoggedIn()) {
         
@@ -85,7 +88,7 @@ angular.module('base0App')
 
       //should return 1 object only
       $http.get('/api/places/'+bar.location+'/'+bar.id).success(function(place) {
-        console.log("place",place);
+        //console.log("place",place);
         placeObj=place; // devuelve [] revisar api
 
         // if object returned is empty.. means no1 goin there
@@ -96,7 +99,7 @@ angular.module('base0App')
         if(placeObj.length<1) {
           // no1 goin there.. im the first
           // create new
-          console.log("XXX",bar);
+          //console.log("XXX",bar);
           placeObj = {
             "location": bar.location,
             "place": bar.id,
@@ -104,7 +107,7 @@ angular.module('base0App')
           };
           //save data
           $http.post('/api/places/', placeObj).success(function(place) {
-            console.log("saved", place);
+            //console.log("saved", place);
             bar.userAdded = true;
             bar.users = place.users;
             bar.goinCount=place.users.length;
@@ -113,7 +116,7 @@ angular.module('base0App')
           // some1 already goin
           // check if we are on the user list (are we goin? )
           // add or remove depending on checkbox state
-          console.log("else placeObj", placeObj);
+          //console.log("else placeObj", placeObj);
           // pick first element since its an array
           placeObj= placeObj[0];
 
@@ -132,10 +135,10 @@ angular.module('base0App')
           }
           placeObj.users=filterUser;
 
-          console.log("PUT placeObj", placeObj);
+          //console.log("PUT placeObj", placeObj);
           //update data
           $http.put('/api/places/'+placeObj._id, placeObj).success(function(place) {
-            console.log("Updated",place);
+            //console.log("Updated",place);
             bar.userAdded = !bar.userAdded;
             bar.users = place.users;
             bar.goinCount = place.users.length;
@@ -149,6 +152,7 @@ angular.module('base0App')
 
     // check if have previos search saved, and load
     if (oldSearch.value!=="") {
+      $scope.location=oldSearch.value;
       $scope.search(oldSearch.value);
     }
 

@@ -1,6 +1,3 @@
-.thing-form {
-    margin: 20px 0;
-}
 
 #banner {
     border-bottom: none;
@@ -24,6 +21,9 @@
 
 .footer {
     text-align: center;
+    background-color: #444;
+    color:#eee;
+    opacity: 0.9;
     padding: 30px 0;
     margin-top: 70px;
     border-top: 1px solid #E5E5E5;
@@ -33,20 +33,88 @@
     margin-left: 15px;
 }
 
-.onoff {
-    background-color: green;
-    color:white;
+
+
+
+/////////
+div ul.barslist {
+    background-color: red;
+    width: 95%;
 }
-.onoff:checked {
-    background-color: blue;
-    color: red;
+
+.bar:hover {
+    opacity:1;
+}
+
+.bar {
+    
+    background-color: #345;
+    opacity: .8;
+    margin-bottom: 10px; 
+    width: 95%;
+    height: 120px;
+    padding: 5px;
+    position:relative;
+    border-radius: 10px ;
+    overflow: hidden;
+}
+
+.barimg {
+    width: 100px;
+    height: 100px;
+    float:left;
+    margin: 5px 15px 0px 5px;
+    border-radius: 20px ;
+    border: 2px solid #eee;
+}
+
+.onoffbtn {
+    float: right;
+    border-radius: 20px 0px 20px 0px;
+
 }
 
 .link {
     text-decoration: none;
+    float:left;
     display: block;
+    padding: 10px;
+    color: #67f;
+    
 }
+
 .going {
-    background-color: orange;
+    
     color: white;
+    display:block;
+    padding:10px;
+    float:left;
+    border-radius: 20px ;
+    border: 2px solid #eee;
+}
+.text {
+    width:80%;
+    float:left;
+    color: #eef;
+}
+
+.frm {
+    margin: 0px 0 30px 0;
+    width: 95%;
+    text-align: center;
+}
+
+#location {
+    padding: 5px 20px;
+    width: 70%;
+    border-radius: 20px 0px 0px 20px;
+    outline: none;
+}
+#searchbtn {
+    padding: 5px 10px;
+    width: 25%;
+    border-radius: 0px 20px 20px 0px;
+    background-color: #634;
+    color: #eee;
+    outline: none;
 }
