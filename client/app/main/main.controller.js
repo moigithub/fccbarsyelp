@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('base0App')
-  .controller('MainCtrl', function ($scope, $http, Auth) {
+  .value('oldSearch',{value:""})
+  .controller('MainCtrl', function ($scope, $http, Auth, oldSearch) {
     $scope.getCurrentUser = Auth.getCurrentUser();
     $scope.isLoggedIn = Auth.isLoggedIn;
 
@@ -9,6 +10,10 @@ angular.module('base0App')
     //$scope.places = [];
 
     $scope.search = function(location) {
+      // save location
+      oldSearch.value = location;
+
+      // get data
       $http.get('/api/data/'+location).success(function(barslist) {
         var barslist = barslist["businesses"];
 
@@ -140,6 +145,15 @@ angular.module('base0App')
 
 
     } // end addme function
+
+
+    // check if have previos search saved, and load
+    if (oldSearch.value!=="") {
+      $scope.search(oldSearch.value);
+    }
+
+
+
   }); // end controller
 /*
 var PlaceSchema = new Schema({

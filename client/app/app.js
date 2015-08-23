@@ -7,6 +7,7 @@ angular.module('base0App', [
   'ngRoute',
   'ui.bootstrap'
 ])
+
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider
       .otherwise({
