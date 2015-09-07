@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('base0App')
-  .config(function ($routeProvider) {
+  .config(['$routeProvider',function ($routeProvider) {
     $routeProvider
       .when('/login', {
         templateUrl: 'app/account/login/login.html',
@@ -16,4 +16,4 @@ angular.module('base0App')
         controller: 'SettingsCtrl',
         authenticate: true
       });
-  });
+  }]);

@@ -1,7 +1,8 @@
 'use strict';
 
 angular.module('base0App')
-  .controller('AdminCtrl', function ($scope, $http, Auth, User) {
+  .controller('AdminCtrl', AdminCtrl);
+function AdminCtrl($scope, $http, Auth, User) {
 
     // Use the User $resource to fetch all users
     $scope.users = User.query();
@@ -14,4 +15,6 @@ angular.module('base0App')
         }
       });
     };
-  });
+  }
+
+AdminCtrl.$inject=['$scope', '$http', 'Auth', 'User'];

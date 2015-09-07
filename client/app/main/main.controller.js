@@ -2,7 +2,8 @@
 
 angular.module('base0App')
   .value('oldSearch',{value:""})
-  .controller('MainCtrl', function ($scope, $http, Auth, oldSearch) {
+  .controller('MainCtrl',MainCtrl);
+function MainCtrl($scope, $http, Auth, oldSearch) {
     $scope.getCurrentUser = Auth.getCurrentUser();
     $scope.isLoggedIn = Auth.isLoggedIn;
 
@@ -162,7 +163,10 @@ angular.module('base0App')
 
 
 
-  }); // end controller
+  } // end controller
+
+
+MainCtrl.$inject=['$scope', '$http', 'Auth', 'oldSearch'];  
 /*
 var PlaceSchema = new Schema({
   location: String,
