@@ -67,8 +67,12 @@ angular.module('base0App')
             return tbar;
           });
           
+        }).error(function(data, status) {
+          console.error('api/places error', status, data);
         });
 
+      }).error(function(data, status) {
+        console.error('api/data error', status, data);
       });
     } // end search function
 
